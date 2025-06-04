@@ -1,9 +1,12 @@
+using MySql.Data.MySqlClient;
+
+//================minimal configuration for a mobile app using .NET 8=================
+
+//configure mobile app
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Add services to the container - openAPI
 builder.Services.AddOpenApi();
-
+//to biuld app
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -11,31 +14,44 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
+//share API documentation in production
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+//===================end minimal configuration for a mobile app using .NET 8=================
 
-app.MapGet("/weatherforecast", () =>
+
+//MapGet is used to add endpoints to the app, endpoint adress must start with/
+
+//===================run the app=================
+
+app.MapGet("/describe", async () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    try
+    {
+        var opisKolumn = new List<object>();
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        using var connection = new MySqlConnection(connectionString);
+        await connection.OpenAsync();
+        using var command = new MySqlCommand("DESCRIBE item", connection);
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            opisKolumn.Add(new
+            {
+                Field = reader.GetString(0),
+                Type = reader.GetString(1),
+                Null = reader.GetString(2),
+                Key = reader.GetString(3),
+                Default = reader.IsDBNull(4) ? null : reader.GetValue(4),
+                Extra = reader.GetString(5)
+            });
+        }
+        return Results.Ok(opisKolumn);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
