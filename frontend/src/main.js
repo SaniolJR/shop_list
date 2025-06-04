@@ -9,8 +9,8 @@ import './style.css';
 function Main() {
   return (
     //background color
-    <main className ="bg-color">
-      <Folder></Folder> 
+    <main>
+      <Folder color="green"></Folder> 
     </main>
   );
 }

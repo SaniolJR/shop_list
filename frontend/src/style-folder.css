@@ -1,4 +1,100 @@
 .main-container {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 29vw;  /*30% viev width*/
+  height: 19vw; /*20% viev height*/
+  margin: 2vw;
+  border-radius: 20%;
+  border-width: 1vh;
+  overflow: hidden;
+}
+
+.title {
+  font-size: clamp(1.2em, 2.0em, 2.0em);
+  font-family: sans-serif;
+  color: hsl(0, 0%, 10%);
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0.3em; 
+      -webkit-line-clamp: 3; /* max linii */
+
+}
+
+.description {
+  font-size: clamp( 0.3em, 0.9em, 0.9em);
+  font-style: italic;
+  font-family: sans-serif;
+  color: hsl(0, 0%, 20%);
+  margin-bottom: 0.5em;
+  text-align: center;
+  margin:0.5vw;
+      -webkit-line-clamp: 4; /* max linii */
+
+}
+
+.category {
+  font-size: clamp(0.3em, 1.0em, 1.0em);
+  font-family: Tahoma, sans-serif;
+  margin-top: auto; 
+  text-align: center;
+  margin: 0.5vw;
+    -webkit-line-clamp: 2; /* max linii */
+
+}
+
+.title,
+.description,
+.category {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Ograniczenie liczby linii */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bg-blue {
+  background-color: hsl(235, 100%, 26%);
+  border-color: hsl(235, 100%, 40%);
+  color: hsl(235, 100%, 40%);
+}
+.bg-green {
+  background-color: hsl(120, 100%, 26%);
+  border-color: hsl(120, 100%, 40%);
+  color: hsl(120, 100%, 40%);
+}
+.bg-red {
+  background-color: hsl(0, 100%, 26%);
+  border-color: hsl(0, 100%, 40%);
+  color: hsl(0, 100%, 40%);
+}
+.bg-yellow {
+  background-color: hsl(60, 100%, 26%);
+  border-color: hsl(60, 100%, 40%);
+  color: hsl(60, 100%, 40%);
+}
+.bg-pink {
+  background-color: hsl(330, 100%, 26%);
+  border-color: hsl(330, 100%, 40%);
+  color: hsl(330, 100%, 40%);
+}
+.bg-purple {
+  background-color: hsl(270, 100%, 26%);
+  border-color: hsl(270, 100%, 40%);
+  color: hsl(270, 100%, 40%);
+}
+.bg-white {
+  background-color: hsl(0, 0%, 26%);
+  border-color: hsl(0, 0%, 40%);
+  color: hsl(0, 0%, 40%);
+}
+.bg-default {
+  background-color: hsla(0, 0%, 26%, 0.546);
+  border-color: hsl(0, 0%, 40%);
+  color: hsl(0, 0%, 40%);
 }
