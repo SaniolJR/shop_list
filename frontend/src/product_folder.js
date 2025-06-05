@@ -24,7 +24,7 @@ function bg_color(color){
   }
 }
 
-
+//function to create a folder component with a background color based on the props
 function Folder(props) {
   const bgClass = bg_color(props.color);
 
