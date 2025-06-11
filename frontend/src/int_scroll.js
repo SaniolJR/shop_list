@@ -1,36 +1,51 @@
 import React, { useEffect, useState, useRef } from "react";
 
-// Uniwersalny komponent z infinite scrollem i siatką 3 kolumn
 function InfScroll({ containerTypeHTTPGet, ContainerType }) {
-  const [items, setItems] = useState([]); // Przechowuje pobrane elementy
-  const [page, setPage] = useState(1); // Numer aktualnej strony (do paginacji)
-  const [hasMore, setHasMore] = useState(true); // Czy są jeszcze dane do pobrania
-  const loader = useRef(null); // Ref do "loadera" na dole listy
+  const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const loader = useRef(null);
+  const isFetching = useRef(false); // blokada fetchowania
 
-  // Funkcja pobierająca dane z backendu
-  const fetchData = async () => {
-    if (!hasMore) return;
+  const fetchData = async (customPage = page, reset = false) => {
+    if (isFetching.current) return;
+    if (!hasMore && !reset) return;
+    isFetching.current = true;
     try {
-      const res = await fetch(`${containerTypeHTTPGet}?page=${page}&limit=9`);
+      const url = containerTypeHTTPGet.includes('?')
+        ? `${containerTypeHTTPGet}&page=${customPage}&limit=9`
+        : `${containerTypeHTTPGet}?page=${customPage}&limit=9`;
+      const res = await fetch(url);
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        setHasMore(false);
+        isFetching.current = false;
+        return;
+      }
       if (data.length === 0) {
-        setHasMore(false); // Brak więcej danych
+        setHasMore(false);
       } else {
-        setItems(prev => [...prev, ...data]);
+        if (reset) {
+          setItems(data);
+        } else {
+          setItems(prev => [...prev, ...data]);
+        }
         setPage(prev => prev + 1);
       }
     } catch (err) {
       setHasMore(false);
     }
+    isFetching.current = false;
   };
 
-  // Efekt do pobrania pierwszej strony
   useEffect(() => {
-    fetchData();
+    setItems([]);
+    setPage(1);
+    setHasMore(true);
+    fetchData(1, true);
     // eslint-disable-next-line
-  }, []);
+  }, [containerTypeHTTPGet]);
 
-  // Efekt do obsługi infinite scrolla (Intersection Observer)
   useEffect(() => {
     if (!loader.current) return;
     const observer = new IntersectionObserver(
@@ -48,26 +63,24 @@ function InfScroll({ containerTypeHTTPGet, ContainerType }) {
 
   return (
     <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "16px",
-        width: "100%",
-      }}
-    >
-      {items.map((item, idx) => (
-        <ContainerType key={item.id || idx} {...item} />
-      ))}
-      {/* Loader na dole listy */}
-      {hasMore && (
-        <div
-          ref={loader}
-          style={{ gridColumn: "1 / -1", textAlign: "center", padding: "20px" }}
-        >
-          Ładowanie...
-        </div>
-      )}
-    </div>
+    style={{
+      display: "grid",
+      gridTemplateColumns: `repeat(${Math.max(items.length, 1)}, 1fr)`,
+      gap: "16px",
+      width: "100%",
+    }}
+  >
+    {items.map((item, idx) => (
+      <ContainerType key={`${item.id_cart_list}_${idx}`} {...item} />
+    ))}
+    {hasMore && (
+      <div
+        ref={loader}
+        style={{ gridColumn: "1 / -1", textAlign: "center", padding: "20px" }}
+      >
+      </div>
+    )}
+  </div>
   );
 }
 

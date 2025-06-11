@@ -1,7 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import './style-folder.css';
-
 
 function bg_color(color){
   switch(color) {
@@ -11,7 +9,7 @@ function bg_color(color){
       return 'bg-blue';
     case 'green':
       return 'bg-green';
-    case ' yellow':
+    case 'yellow':
       return 'bg-yellow';
     case 'purple':
       return 'bg-purple';
@@ -24,15 +22,15 @@ function bg_color(color){
   }
 }
 
-//function to create a folder component with a background color based on the props
+// Komponent Folder wyświetla dane z propsów
 function Folder(props) {
   const bgClass = bg_color(props.color);
 
   return (
     <div className={`main-container ${bgClass}`}>
-      <h2 className="title">RTX 3070TI</h2>
-      <p className="description">Karta graficzna RTX 3070SI Suprim X od MSI</p>
-      <p className="category">Komputer</p>
+      <h2 className="title">Koszyk #{props.id_cart}</h2>
+      <div>ID listy: {props.id_cart_list}</div>
+      <div>ID użytkownika: {props.user_id_user}</div>
     </div>
   );
 }

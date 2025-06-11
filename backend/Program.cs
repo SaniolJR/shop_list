@@ -1,55 +1,72 @@
 using MySql.Data.MySqlClient;
 
-//================minimal configuration for a mobile app using .NET 8=================
-
-//configure mobile app
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container - openAPI
+
+// Dodaj CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// Dodaj OpenAPI
 builder.Services.AddOpenApi();
-//to biuld app
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Użyj CORS (przed innymi middleware)
+app.UseCors();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-//share API documentation in production
+
+// HTTPS redirection (opcjonalnie, może być po CORS)
 app.UseHttpsRedirection();
 
-//===================end minimal configuration for a mobile app using .NET 8=================
-
-
-//MapGet is used to add endpoints to the app, endpoint adress must start with/
-
-//===================run the app=================
-
-app.MapGet("/describe", async () =>
+// Endpoint zwracający listę koszyków użytkownika
+app.MapGet("/return_cart_list", async (int userId, int page = 1, int limit = 9) =>
 {
     try
     {
-        var opisKolumn = new List<object>();
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         using var connection = new MySqlConnection(connectionString);
         await connection.OpenAsync();
-        using var command = new MySqlCommand("DESCRIBE item", connection);
-        using var reader = await command.ExecuteReaderAsync();
+
+        // Wczytaj zapytanie SQL
+        string sql = File.ReadAllText("sql/return_car_list");
+
+        // Dodaj paginację do zapytania (wstaw wartości bezpośrednio do SQL)
+        sql += $" LIMIT {limit} OFFSET {(page - 1) * limit};";
+
+        using var commandSQL = new MySqlCommand(sql, connection);
+        commandSQL.Parameters.AddWithValue("@userId", userId);
+
+        using var reader = await commandSQL.ExecuteReaderAsync();
+
+        var results = new List<object>();
         while (await reader.ReadAsync())
         {
-            opisKolumn.Add(new
+            results.Add(new
             {
-                Field = reader.GetString(0),
-                Type = reader.GetString(1),
-                Null = reader.GetString(2),
-                Key = reader.GetString(3),
-                Default = reader.IsDBNull(4) ? null : reader.GetValue(4),
-                Extra = reader.GetString(5)
+                id_cart = reader["id_cart"],
+                id_cart_list = reader["id_cart_list"],
+                user_id_user = reader["user_id_user"],
             });
         }
-        return Results.Ok(opisKolumn);
+        Console.WriteLine("--------------------------------------------------");
+        Console.WriteLine($"ZAPYTANIE SQL: {sql}");
+        Console.WriteLine($"ZWRACAM {results.Count} WYNIKÓW DLA UŻYTKOWNIKA {userId} (STRONA {page})");
+        return Results.Ok(results);
     }
     catch (Exception ex)
     {
+        Console.WriteLine(ex.ToString());
         return Results.Problem(ex.Message);
     }
 });

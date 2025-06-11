@@ -1,0 +1,7 @@
+SELECT DISTINCT
+  cart.id_cart,
+  cart_list.id_cart_list,
+  cart_list.user_id_user
+FROM cart
+JOIN cart_list ON cart.cart_list_id_cart_list = cart_list.id_cart_list
+WHERE cart_list.user_id_user = @userId

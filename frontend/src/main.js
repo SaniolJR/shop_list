@@ -7,11 +7,13 @@ import './style.css';
 //main file
 
 function Main() {
+  const userId = 1; // tutaj wpisz właściwe id użytkownika
+
   return (
     <main>
       {/* Infinite scroll z Folderami */}
       <InfScroll
-        containerTypeHTTPGet="/api/folders" // <-- podaj swój endpoint
+        containerTypeHTTPGet={`http://localhost:5016/return_cart_list?userId=${userId}`}
         ContainerType={Folder}
       />
     </main>
