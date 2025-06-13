@@ -1,0 +1,41 @@
+.navBar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #516065;
+    border: 0.35vh solid hsla(0, 0%, 0%, 0.41);
+    border-radius: 5vh;
+    box-shadow: 2vh 2vh 2vh hsla(0, 0%, 0%, 0.33);
+    padding: 0vh;
+    padding-inline: 5vw;
+    margin: 2vh;
+    margin-inline: 10vh
+}
+
+.navBar ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none; /* Usunięcie kropek */
+    padding: 0;
+    height: 5vh; /* Wysokość jako procent viewportu */
+    flex: 1; /* Każdy element ul zajmuje pełną szerokość */
+    min-width: 100px; /* Minimalna szerokość dla każdego elementu */
+    text-align: center; /* Wyrównanie tekstu wielowierszowego */
+}
+
+.navBar ul a {
+    text-decoration: none; /* Usunięcie podkreślenia dla linków */
+    font-size: 1.2em; /* Rozmiar tekstu */
+    font-weight: bold; /* Pogrubienie */
+    color: inherit; /* Zachowuje kolor tekstu */
+    transition: transform 0.3s ease, color 0.3s ease; /* Animacja */
+    color: hsl(0, 0%, 100%);
+   
+}
+
+.navBar ul a:hover {
+    transform: scale(1.4); /* Powiększenie */
+    color: hsla(0, 0%, 93%, 0.762); /* Zmiana koloru przy najechaniu */
+    text-shadow: 0px 4px 10px rgba(225, 220, 220, 0.579);
+}
