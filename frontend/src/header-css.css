@@ -14,14 +14,19 @@
 
 .header ul {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;   /* <-- wyrównanie do prawej */
     align-items: center;
-    list-style: none; /* Usunięcie kropek */
+    list-style: none;
     padding: 0;
-    height: 5vh; /* Wysokość jako procent viewportu */
-    flex: 1; /* Każdy element ul zajmuje pełną szerokość */
-    min-width: 100px; /* Minimalna szerokość dla każdego elementu */
-    text-align: center; /* Wyrównanie tekstu wielowierszowego */
+    height: 5vh;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    gap: 1vw;                    /* odstęp między li */
+}
+
+.header ul li {
+    margin-right: 0;             /* niepotrzebny, bo gap już działa */
 }
 
 .header ul a {
