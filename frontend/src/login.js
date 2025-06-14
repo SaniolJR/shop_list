@@ -14,26 +14,21 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const res = await fetch("http://localhost:5016/login_account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, passwd }),
-        credentials: 'include' // ważne, aby wysłać ciasteczka z żądaniem
+        credentials: 'include'
       });
       const data = await res.json();
-      alert(data.message);
       if (res.ok) {
-        // przekieruj użytkownika do strony głównej lub innej strony
-       if (res.ok) {
-          window.location.href = "/account";  // przekierowanie do strony konta
-          LogUser.userNick = data.user.nick; // zakładając, że nick jest zwracany w odpowiedzi
-          LogUser.userID = data.user.userId; // zakładając, że userId jest zwracany w odpowiedzi
-          LogUser.userEmail = data.user.email; // zakładając, że email jest zwracany w odpowiedzi
-        }
+        window.location.href = "/account";
+        // (LogUser nie jest już potrzebny, bo masz ciasteczko)
+      } else {
+        alert(data.message || "Nieprawidłowy email lub hasło.");
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.error("Błąd podczas logowania:", err);
       alert("Wystąpił błąd podczas logowania. Sprawdź dane i spróbuj ponownie.");
     }
@@ -64,10 +59,10 @@ function Login() {
           />
         </label>
         <div className="account-form-buttons">
-          <button className="account-form-button" type="submit">Zaloguj</button>
           <Link to="/create-account">
             <button className="account-form-button" type="button">Załóż konto</button>
           </Link>
+            <button className="account-form-button" type="submit">Zaloguj</button>
         </div>
       </form>
     </div>
