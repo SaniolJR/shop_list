@@ -41,7 +41,7 @@ public static class AccountsAPI
 
                     await commandSQL.ExecuteNonQueryAsync();
                 }
-                return Results.Ok(new { message = "Account registered successfully." });
+                return Results.Ok(new { success = true, message = "Konto zostało utworzone." });
             }
             catch (Exception ex)
             {

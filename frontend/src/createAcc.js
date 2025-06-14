@@ -17,7 +17,7 @@ function CreateAccount() {
         });
         const data = await res.json();
         alert(data.message);
-        if (data.success) {
+        if (res.ok) {
             // przekieruj użytkownika do strony logowania lub innej strony
             window.location.href = "/login";
         }
