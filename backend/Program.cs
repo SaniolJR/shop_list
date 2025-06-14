@@ -35,5 +35,7 @@ app.ReturnCartList(builder.Configuration);
 // Endpoint dodający koszyk do bazy danych
 app.AddCart(builder.Configuration);
 
+// Endpoint rejestrujący konto użytkownika
+app.RegisterAccount(builder.Configuration);
 
 app.Run();
