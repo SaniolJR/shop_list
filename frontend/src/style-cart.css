@@ -1,37 +1,35 @@
 .main-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* tytuł na górze */
   border: 1px solid #ccc;
-  width: 29vw;  /*30% viev width*/
-  height: 19vw; /*20% viev height*/
+  width: 27vw;
+  height: 19vw;
   margin: 2vw;
   border-radius: 20%;
   border-width: 1vh;
   overflow: hidden;
+  background: #fff;
+  padding-top: 2vw; /* odstęp od góry */
 }
 
 .title {
-  font-size: clamp(1.2em, 2.0em, 2.0em);
-  font-family: sans-serif;
-  color: hsl(0, 0%, 10%);
+  font-size: 2.6vw;
   font-weight: bold;
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 0.3em; 
-      -webkit-line-clamp: 3; /* max linii */
-
+  color: #222;
+  margin-bottom: 2.5vw; /* odstęp pod tytułem */
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .description {
-  font-size: clamp( 0.3em, 0.9em, 0.9em);
-  font-style: italic;
-  font-family: sans-serif;
-  color: hsl(0, 0%, 20%);
-  margin-bottom: 0.5em;
+  font-size: 1.5vw;
+  color: #333;
   text-align: center;
-  margin:0.5vw;
-      -webkit-line-clamp: 4; /* max linii */
-
+  word-break: break-word;
+  max-width: 90%;
+  margin-top: 1vw; /* odstęp od góry */
 }
 
 .category {
@@ -59,9 +57,9 @@
 }
 
 .bg-blue {
-  background-color: hsl(235, 100%, 26%);
-  border-color: hsl(235, 100%, 40%);
-  color: hsl(235, 100%, 40%);
+  background-color: hsl(235, 100%, 40%);
+  border-color: hsl(235, 100%, 26%);
+  color: hsl(0, 0%, 100%);
 }
 .bg-green {
   background-color: hsl(120, 100%, 26%);
@@ -90,11 +88,6 @@
 }
 .bg-white {
   background-color: hsl(0, 0%, 26%);
-  border-color: hsl(0, 0%, 40%);
-  color: hsl(0, 0%, 40%);
-}
-.bg-default {
-  background-color: hsla(0, 0%, 26%, 0.546);
   border-color: hsl(0, 0%, 40%);
   color: hsl(0, 0%, 40%);
 }

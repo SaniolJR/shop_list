@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import "./style-adding.css";
 
 // komponent do dodawania folderu (czyli koszyka)
-function AddFolder({ onClose }) {
+function AddCart({ onClose }) {
   // tu trzymamy co wpisujesz w polu "Nazwa"
   const [name, setName] = useState("");
   // tu trzymamy co wpisujesz w polu "Opisz"
   const [desc, setDesc] = useState("");
 
   // funkcja wywoływana jak klikniesz "Dodaj"
-  const handleAddFolder = async () => {
+  const handleAddCart = async () => {
     // request do backendu, wrzuca to co wpisałeś do bazy
     await fetch("http://localhost:5016/add_cart", {
       method: "POST",
@@ -45,10 +45,10 @@ function AddFolder({ onClose }) {
       </label>
       {/* dwa przyciski na dole, rozciągnięte od lewej do prawej */}
       <div className="button-row">
-        <button className="button" onClick={handleAddFolder}>Dodaj</button>
         <button className="button" onClick={onClose}>Anuluj</button>
+        <button className="button" onClick={handleAddCart}>Dodaj</button>
       </div>
     </div>
   );
 }
-export default AddFolder;
+export default AddCart;

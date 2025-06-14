@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Header from "./header";
 import InfScroll from "./int_scroll";
-import Folder from "./product_folder";
+import Cart from "./cart-div";
 import AddButton from "./add_button";
-import AddFolder from "./add_folder";
+import AddCart from "./add_cart";
 
 function Carts() {
   const [showAdd, setShowAdd] = useState(false);
@@ -12,10 +11,10 @@ function Carts() {
     <main>
       <InfScroll
         containerTypeHTTPGet={`http://localhost:5016/return_cart_list?userId=1`}
-        ContainerType={Folder}
+        ContainerType={Cart}
       />
       <AddButton mode="cart" onClick={() => setShowAdd(true)} />
-      {showAdd && <AddFolder onClose={() => setShowAdd(false)} />}
+      {showAdd && <AddCart onClose={() => setShowAdd(false)} />}
     </main>
   );
 }

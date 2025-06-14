@@ -2,8 +2,9 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./header";
 import InfScroll from "./int_scroll";
-import Folder from "./product_folder";
 import Carts from './Carts';
+import Cart from "./cart-div";
+import AddButton from "./add_button";
 import "./style.css";
 
 // Przykładowy komponent dla produktów (zrób swój własny)
@@ -12,7 +13,7 @@ function Items() {
     <main>
       <InfScroll
         containerTypeHTTPGet={`http://localhost:5016/return_items_list?userId=1`}
-        ContainerType={Folder} // zamień na swój komponent produktu
+        ContainerType={Cart} // zamień na swój komponent produktu
       />
     </main>
   );

@@ -1,5 +1,5 @@
 body {
-  background-color: hsl(235, 100%, 26%);
+  background-color: hsl(235, 100%, 70%);
   margin: 0; /* często trzeba usunąć domyślny margin */
   height: 100vh; /* żeby pokryć całe okno */
 }

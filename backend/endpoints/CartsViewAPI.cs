@@ -15,50 +15,42 @@ public static class CartsViewAPI
     //endpoint zwracający listę koszyków użytkownika, przyjmuje userId, page i limit jako parametry
     public static void ReturnCartList(this WebApplication app, IConfiguration config)
     {
-        app.MapGet("/return_cart_list", async (int userId, int page = 1, int limit = 9) =>
+        app.MapGet("/return_cart_list", async (int userId) =>
+{
+    try
+    {
+        var connectionString = config.GetConnectionString("DefaultConnection");
+        using var connection = new MySqlConnection(connectionString);
+        await connection.OpenAsync();
+
+        string sql = File.ReadAllText("sql/return_car_list");
+        // NIE doklejaj LIMIT/OFFSET!
+        using var commandSQL = new MySqlCommand(sql, connection);
+        commandSQL.Parameters.AddWithValue("@userId", userId);
+
+        using var reader = await commandSQL.ExecuteReaderAsync();
+
+        var results = new List<object>();
+        while (await reader.ReadAsync())
         {
-            try
+            results.Add(new
             {
-                //podstawa by działało - pobiera tekst do połączenia się z DB
-                var connectionString = config.GetConnectionString("DefaultConnection");
-                //tworzy kwerendę do bazy danych MySQL
-                //using - otwarcie połączenia z bazą danych i automatyczne zamknięcie połączenia po zakończeniu
-                using var connection = new MySqlConnection(connectionString);
-                await connection.OpenAsync();   //otwiera asynchroniczne połączenie - nie blokuje programu na jego czas!
-
-                //zczytywanie zapytania SQL z pliku
-                string sql = File.ReadAllText("sql/return_car_list");
-                //dodanie paginacji do zapytania
-                sql += $" LIMIT {limit} OFFSET {(page - 1) * limit};";
-
-                //tworzenie komendy sql
-                using var commandSQL = new MySqlCommand(sql, connection);
-                commandSQL.Parameters.AddWithValue("@userId", userId);  //przekazanie parametru user do sql
-
-                //comantSQL - wie jakie zapytanie trzeba wykonać, ExecuteReaderAsync - wykonuje zapytanie i zwraca wynik jako obiekt MySqlDataReader
-                using var reader = await commandSQL.ExecuteReaderAsync();
-
-                var results = new List<object>();
-                //czytanie rekordów z bazy danych
-                while (await reader.ReadAsync())
-                {
-                    results.Add(new
-                    {
-                        id_cart = reader["id_cart"],
-                        id_cart_list = reader["id_cart_list"],
-                        user_id_user = reader["user_id_user"],
-                    });
-                }
-                // Wyświetlenie informacji o zapytaniu w konsoli
-                DisplayEndpointInfo(sql, results.Count, userId, page);
-                return Results.Ok(results);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return Results.Problem(ex.Message);
-            }
-        });
+                id_cart = reader["id_cart"],
+                name = reader["name"],
+                description = reader["description"],
+                id_cart_list = reader["id_cart_list"],
+                user_id_user = reader["user_id_user"],
+            });
+        }
+        DisplayEndpointInfo(sql, results.Count, userId, 1);
+        return Results.Ok(results);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
+        return Results.Problem(ex.Message);
+    }
+});
     }
 
     //endpoint dodający koszyk do bazy danych, przyjmuje userId jako parametr
@@ -106,6 +98,9 @@ public static class CartsViewAPI
                 insertCartCmd.Parameters.AddWithValue("@cartListId", cartListId);
 
                 await insertCartCmd.ExecuteNonQueryAsync();
+
+                // Wyświetlenie informacji o dodaniu koszyka w konsoli
+                Console.WriteLine($"Dodano koszyk: {cart.name} (ID listy koszyków: {cartListId}) dla użytkownika {cart.userId}");
 
                 return Results.Ok("Koszyk został dodany.");
             }
