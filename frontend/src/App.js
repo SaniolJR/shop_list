@@ -4,7 +4,9 @@ import Header from "./header";
 import InfScroll from "./int_scroll";
 import Carts from './Carts';
 import Cart from "./cart-div";
-import AddButton from "./add_button";
+import Login from "./login";
+import CreateAcc from "./createAcc";
+import Account from "./account";
 import "./style.css";
 
 // Przykładowy komponent dla produktów (zrób swój własny)
@@ -26,6 +28,9 @@ function App() {
       <Routes>
         <Route path="/carts" element={<Carts />} />
         <Route path="/items" element={<Items />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/create-account" element={<CreateAcc />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
     </BrowserRouter>
   );

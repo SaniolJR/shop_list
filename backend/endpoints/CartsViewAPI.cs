@@ -119,4 +119,6 @@ public static class CartsViewAPI
         Console.WriteLine($"ZAPYTANIE SQL: {sql}");
         Console.WriteLine($"ZWRACAM {resultsCount} WYNIKÓW DLA UŻYTKOWNIKA {userId} (STRONA {page})");
     }
+
+
 }
