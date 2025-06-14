@@ -48,5 +48,8 @@ app.GetUserInfoFromCookies();
 // Endpoint odpowiadający za aktualizacje info o użytkowniku
 app.UpdateAccount();
 
+//Endpoint odpowiadający za wylogowanie użytkownika
+app.Logout();
+
 
 app.Run();

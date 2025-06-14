@@ -179,4 +179,12 @@ public static class AccountsAPI
         });
     }
 
+    public static void Logout(this WebApplication app)
+    {
+        app.MapPost("/logout", (HttpResponse response) =>
+        {
+            response.Cookies.Delete("userID");
+            return Results.Ok(new { success = true, message = "Wylogowano." });
+        });
+    }
 }

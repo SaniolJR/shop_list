@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-color: #516065;
+    background-color: #2196f3;
     border: 0.35vh solid hsla(0, 0%, 0%, 0.41);
     border-radius: 5vh;
     box-shadow: 2vh 2vh 2vh hsla(0, 0%, 0%, 0.33);
@@ -22,7 +22,7 @@
     flex: 1;
     min-width: 100px;
     text-align: center;
-    gap: 1vw;                    /* odstęp między li */
+    gap: 10vw;                    /* odstęp między li */
 }
 
 .header ul li {
@@ -43,4 +43,30 @@
     transform: scale(1.4); /* Powiększenie */
     color: hsla(0, 0%, 93%, 0.762); /* Zmiana koloru przy najechaniu */
     text-shadow: 0px 4px 10px rgba(225, 220, 220, 0.579);
+}
+
+.logout-btn {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 0.5vw;
+    border: 0.35vh solid hsla(0, 0%, 0%, 0.41);
+  padding: 0.7vw 2vw;
+  font-size: 1.2vw;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 0.5vw;
+}
+.logout-btn:hover {
+  background: #1769aa;
+}
+
+.header,
+.header ul,
+.header ul li,
+.header ul a,
+.logout-btn {
+    font-family: 'Segoe UI', Arial, sans-serif;
+        font-weight: bold;
+
 }
