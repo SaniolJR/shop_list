@@ -142,12 +142,13 @@ public static class AccountsAPI
             if (string.IsNullOrWhiteSpace(body))
                 return Results.BadRequest(new { message = "Brak danych do aktualizacji." });
 
-            // Parsuj JSON (może być nick lub email)
+            // Parsuj JSON (może być nick, email lub passwd)
             var data = System.Text.Json.JsonDocument.Parse(body).RootElement;
             string? newNick = data.TryGetProperty("nick", out var n) ? n.GetString() : null;
             string? newEmail = data.TryGetProperty("email", out var e) ? e.GetString() : null;
+            string? newPasswd = data.TryGetProperty("passwd", out var p) ? p.GetString() : null;
 
-            if (string.IsNullOrEmpty(newNick) && string.IsNullOrEmpty(newEmail))
+            if (string.IsNullOrEmpty(newNick) && string.IsNullOrEmpty(newEmail) && string.IsNullOrEmpty(newPasswd))
                 return Results.BadRequest(new { message = "Brak danych do aktualizacji." });
 
             var connectionString = request.HttpContext.RequestServices
@@ -156,19 +157,20 @@ public static class AccountsAPI
             using var connection = new MySqlConnection(connectionString);
             await connection.OpenAsync();
 
-            string sql = "";
-            if (!string.IsNullOrEmpty(newNick) && !string.IsNullOrEmpty(newEmail))
-                sql = "UPDATE user SET nick = @nick, email = @email WHERE id_user = @userId";
-            else if (!string.IsNullOrEmpty(newNick))
-                sql = "UPDATE user SET nick = @nick WHERE id_user = @userId";
-            else
-                sql = "UPDATE user SET email = @email WHERE id_user = @userId";
+            // Buduj zapytanie SQL dynamicznie
+            var updates = new List<string>();
+            if (!string.IsNullOrEmpty(newNick)) updates.Add("nick = @nick");
+            if (!string.IsNullOrEmpty(newEmail)) updates.Add("email = @email");
+            if (!string.IsNullOrEmpty(newPasswd)) updates.Add("passwd = @passwd");
+            string sql = $"UPDATE user SET {string.Join(", ", updates)} WHERE id_user = @userId";
 
             using var cmd = new MySqlCommand(sql, connection);
             if (!string.IsNullOrEmpty(newNick))
                 cmd.Parameters.AddWithValue("@nick", newNick);
             if (!string.IsNullOrEmpty(newEmail))
                 cmd.Parameters.AddWithValue("@email", newEmail);
+            if (!string.IsNullOrEmpty(newPasswd))
+                cmd.Parameters.AddWithValue("@passwd", newPasswd);
             cmd.Parameters.AddWithValue("@userId", userId);
 
             var affected = await cmd.ExecuteNonQueryAsync();
@@ -187,4 +189,36 @@ public static class AccountsAPI
             return Results.Ok(new { success = true, message = "Wylogowano." });
         });
     }
+
+    public static void DeleteAccount(this WebApplication app)
+    {
+        app.MapDelete("/delete_account", async (HttpRequest request, HttpResponse response) =>
+        {
+            var userId = request.Cookies["userID"];
+            if (string.IsNullOrEmpty(userId))
+                return Results.Unauthorized();
+
+            var connectionString = request.HttpContext.RequestServices
+                .GetRequiredService<IConfiguration>()
+                .GetConnectionString("DefaultConnection");
+            using var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            // Usuń użytkownika
+            string sql = "DELETE FROM user WHERE id_user = @userId";
+            using var cmd = new MySqlCommand(sql, connection);
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            var affected = await cmd.ExecuteNonQueryAsync();
+
+            // Usuwamy ciasteczko po usunięciu konta
+            response.Cookies.Delete("userID");
+
+            if (affected > 0)
+                return Results.Ok(new { success = true, message = "Konto zostało usunięte." });
+            else
+                return Results.BadRequest(new { message = "Nie udało się usunąć konta." });
+        });
+    }
+
 }

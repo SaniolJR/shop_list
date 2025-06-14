@@ -51,5 +51,7 @@ app.UpdateAccount();
 //Endpoint odpowiadający za wylogowanie użytkownika
 app.Logout();
 
+// Endpoint usuwający konto użytkownika
+app.DeleteAccount();
 
 app.Run();
