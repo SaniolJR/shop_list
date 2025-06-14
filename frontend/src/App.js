@@ -29,7 +29,7 @@ function App() {
         <Route path="/carts" element={<Carts />} />
         <Route path="/items" element={<Items />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/create-account" element={<CreateAcc />} />
+        <Route path="register" element={<CreateAcc />} />
         <Route path="/account" element={<Account />} />
       </Routes>
     </BrowserRouter>

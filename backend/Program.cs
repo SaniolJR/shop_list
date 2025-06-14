@@ -8,9 +8,10 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin() // pozwala na dowolne źródło żądań
-              .AllowAnyHeader() //pozwala na dowolne nagłówki
-              .AllowAnyMethod();    //pozwala na dowolne metody HTTP
+        policy.WithOrigins("http://localhost:3000")
+              .AllowCredentials()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
@@ -37,5 +38,15 @@ app.AddCart(builder.Configuration);
 
 // Endpoint rejestrujący konto użytkownika
 app.RegisterAccount(builder.Configuration);
+
+// Endpoint logujący do konta użytkownika
+app.LoginToAccount(builder.Configuration);
+
+// Endpoint zwracający informacje o użytkowniku
+app.GetUserInfoFromCookies();
+
+// Endpoint odpowiadający za aktualizacje info o użytkowniku
+app.UpdateAccount();
+
 
 app.Run();
