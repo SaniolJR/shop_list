@@ -1,5 +1,6 @@
 import React from 'react';
 import './style-cart.css';
+import cartIMG from './cartIMG.png';
 
 function bg_color(color){
   switch(color) {
@@ -19,6 +20,13 @@ function Cart(props) {
 
   return (
     <div className={`main-container ${bgClass}`}>
+      {/* Obrazek tła */}
+      <img
+        className="bg-image"
+        src={cartIMG}
+        alt=""
+        draggable={false}
+      />
       <div className="title">{props.name}</div>
       <div className="description">{props.description}</div>
     </div>

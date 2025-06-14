@@ -1,4 +1,6 @@
 .main-container {
+  position: relative; /*do pozycjonowania obrazka*/
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,14 +20,13 @@
   font-size: 2.6vw;
   font-weight: bold;
   text-align: center;
-  color: #222;
+  color: #ffffff !important;
   margin-bottom: 2.5vw; /* odstęp pod tytułem */
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .description {
   font-size: 1.5vw;
-  color: #333;
   text-align: center;
   word-break: break-word;
   max-width: 90%;
@@ -38,8 +39,26 @@
   margin-top: auto; 
   text-align: center;
   margin: 0.5vw;
-    -webkit-line-clamp: 2; /* max linii */
+  -webkit-line-clamp: 2; /* max linii */
 
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* lub cover, jeśli chcesz wypełnić całość */
+  opacity: 0.25; /* przezroczystość obrazka */
+  pointer-events: none; /* żeby nie przeszkadzał w klikaniu */
+  z-index: 1;
+}
+
+/* Tekst nad obrazkiem */
+.title, .description {
+  position: relative;
+  z-index: 2;
 }
 
 .title,
@@ -59,7 +78,7 @@
 .bg-blue {
   background-color: hsl(235, 100%, 40%);
   border-color: hsl(235, 100%, 26%);
-  color: hsl(0, 0%, 100%);
+  color: hsl(207, 82%, 89%);
 }
 .bg-green {
   background-color: hsl(120, 100%, 26%);
@@ -87,7 +106,7 @@
   color: hsl(270, 100%, 40%);
 }
 .bg-white {
-  background-color: hsl(0, 0%, 26%);
-  border-color: hsl(0, 0%, 40%);
-  color: hsl(0, 0%, 40%);
+  background-color: #fff;         /* biały */
+  border-color: #ccc;             /* jasna ramka */
+  color: #222;                    /* ciemny tekst na białym tle */
 }
