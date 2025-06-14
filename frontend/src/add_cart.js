@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import "./style-adding.css";
 
-// komponent do dodawania folderu (czyli koszyka)
 function AddCart({ onClose }) {
-  // tu trzymamy co wpisujesz w polu "Nazwa"
   const [name, setName] = useState("");
-  // tu trzymamy co wpisujesz w polu "Opisz"
   const [desc, setDesc] = useState("");
 
-  // funkcja wywoływana jak klikniesz "Dodaj"
   const handleAddCart = async () => {
-    // request do backendu, wrzuca to co wpisałeś do bazy
+    // Pobierz userId z backendu
+    const res = await fetch("http://localhost:5016/me", { credentials: "include" });
+    const data = await res.json();
+    const userId = data.userId;
+
+    // Teraz dodaj koszyk dla aktualnego usera
     await fetch("http://localhost:5016/add_cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: 1, name, description: desc }), // userId, name, description
+      body: JSON.stringify({ userId, name, description: desc }),
     });
-    // zamykamy okno po dodaniu
     onClose();
   };
 
@@ -28,22 +28,20 @@ function AddCart({ onClose }) {
         <input
           className="input"
           type="text"
-          maxLength={30} // nie pozwala wpisać więcej niż 30 znaków
-          value={name} // przechowywanie wpisu przez useState do name
-          onChange={e => setName(e.target.value)} // jak coś wpiszesz, to się zapisuje do state
+          maxLength={30}
+          value={name}
+          onChange={e => setName(e.target.value)}
         />
       </label>
-      {/* Pole do wpisania opisu folderu */}
       <label className="input-label">
         Opisz: (max 200 znaków)
         <textarea
           className="textarea"
-          maxLength={200} // max 200 znaków
-          value={desc} // przechowywanie wpisu przez useState do desc
-          onChange={e => setDesc(e.target.value)} // zapisuje do state
+          maxLength={200}
+          value={desc}
+          onChange={e => setDesc(e.target.value)}
         />
       </label>
-      {/* dwa przyciski na dole, rozciągnięte od lewej do prawej */}
       <div className="button-row">
         <button className="button" onClick={onClose}>Anuluj</button>
         <button className="button" onClick={handleAddCart}>Dodaj</button>
