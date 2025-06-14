@@ -7,10 +7,10 @@ function AddButton({ mode = "cart", onClick }) {
     <button
       onClick={onClick}
       style={{
-        position: "fixed",         // <-- kluczowe!
-        right: "32px",              // odległość od lewej krawędzi
-        bottom: "32px",            // odległość od dołu
-        zIndex: 1000,              // żeby był nad innymi elementami
+        position: "fixed",
+        right: "32px",
+        bottom: "32px",
+        zIndex: 1000,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

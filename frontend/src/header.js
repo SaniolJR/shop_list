@@ -1,14 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './header-css.css';
 
-const Header = ({ onSelectComponent }) => {
+const Header = () => {
   return (
-    <nav className='navBar'>
+    <nav className='header'>
       <ul>
-        <li><a href="#" onClick={e => { e.preventDefault(); onSelectComponent('events'); }}>Szukaj</a></li>
-        <li><a href="#" onClick={e => { e.preventDefault(); onSelectComponent('rooms'); }}>Wyloguj</a></li>
-        <li><a href="#" onClick={e => { e.preventDefault(); onSelectComponent('reservations'); }}>Konto</a></li>
-        <li><a href="#" onClick={e => { e.preventDefault(); onSelectComponent('payments'); }}>Urzytkownik</a></li>
+        <li><Link to="/carts">Koszyki</Link></li>
+        <li><Link to="/items">Produkty</Link></li>
       </ul>
     </nav>
   );
