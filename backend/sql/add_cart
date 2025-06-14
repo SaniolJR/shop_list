@@ -1,0 +1,12 @@
+-- znajdywanie lsity koszykow usera
+SELECT id_cart_list INTO @cartListId FROM cart_list WHERE user_id_user = @userId;
+
+-- tworzenie jak nie istnieje
+IF @cartListId IS NULL THEN
+    INSERT INTO cart_list (user_id_user) VALUES (@userId);
+    SET @cartListId = LAST_INSERT_ID();
+END IF;
+
+-- dodawanie koszyka do listy
+INSERT INTO cart (name, description, cart_list_id_cart_list)
+VALUES (@name, @description, @cartListId);

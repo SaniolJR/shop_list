@@ -7,7 +7,6 @@ const Header = () => {
     <nav className='header'>
       <ul>
         <li><Link to="/carts">Koszyki</Link></li>
-        <li><Link to="/items">Produkty</Link></li>
       </ul>
     </nav>
   );
