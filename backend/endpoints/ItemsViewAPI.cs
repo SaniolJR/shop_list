@@ -173,6 +173,95 @@ public static class ItemsViewAPI
         });
     }
 
+    public static void GetItemDetails(this WebApplication app, IConfiguration config)
+    {
+        app.MapGet("/get_item_details/{itemId}", async (int itemId) =>
+        {
+            try
+            {
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                // pobierz szczegóły przedmiotu z sql
+                string sql = @"
+                SELECT id_item, name, description, price, currency, link, imageURL
+                FROM item
+                WHERE id_item = @itemId";
+
+                using var command = new MySqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@itemId", itemId);
+
+                using var reader = await command.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return Results.Ok(new
+                    {
+                        //GetOrdinal jest używane do pobrania indeksu kolumny na podstawie nazwy
+                        id_item = reader.GetInt32(reader.GetOrdinal("id_item")),
+                        name = reader.GetString(reader.GetOrdinal("name")),
+                        description = reader.IsDBNull(reader.GetOrdinal("description")) ? "" : reader.GetString(reader.GetOrdinal("description")),
+                        price = reader.IsDBNull(reader.GetOrdinal("price")) ? 0 : reader.GetFloat(reader.GetOrdinal("price")),
+                        currency = reader.IsDBNull(reader.GetOrdinal("currency")) ? "" : reader.GetString(reader.GetOrdinal("currency")),
+                        link = reader.IsDBNull(reader.GetOrdinal("link")) ? "" : reader.GetString(reader.GetOrdinal("link")),
+                        imageURL = reader.IsDBNull(reader.GetOrdinal("imageURL")) ? "" : reader.GetString(reader.GetOrdinal("imageURL"))
+                    });
+                }
+                else
+                {
+                    return Results.NotFound("Przedmiot nie został znaleziony.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Błąd podczas pobierania szczegółów przedmiotu: {ex.Message}");
+            }
+        });
+    }
+
+    public static void UpdateItem(this WebApplication app, IConfiguration config)
+    {
+        app.MapPut("/update_item/{itemId}", async (int itemId, AddItemRequest request) =>
+        {
+            try
+            {
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                // Aatualizuj item
+                string sql = @"
+                UPDATE item 
+                SET name = @name, description = @description, price = @price, 
+                    currency = @currency, link = @link, imageURL = @imageURL
+                WHERE id_item = @itemId";
+
+                using var command = new MySqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@itemId", itemId);
+                command.Parameters.AddWithValue("@name", request.name);
+                command.Parameters.AddWithValue("@description", request.description ?? "");
+                command.Parameters.AddWithValue("@price", request.price);
+                command.Parameters.AddWithValue("@currency", request.currency ?? "");
+                command.Parameters.AddWithValue("@link", request.link ?? "");
+                command.Parameters.AddWithValue("@imageURL", request.imageURL ?? "");
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                if (rowsAffected > 0)
+                {
+                    return Results.Ok(new { success = true, message = "Przedmiot został zaktualizowany." });
+                }
+                else
+                {
+                    return Results.NotFound("Przedmiot nie został znaleziony.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Błąd podczas aktualizacji przedmiotu: {ex.Message}");
+            }
+        });
+    }
 
 
 }

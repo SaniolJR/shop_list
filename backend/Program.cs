@@ -63,4 +63,10 @@ app.AddItem(builder.Configuration);
 //Endpoint zwracający listę przedmiotów w koszyku
 app.GetItemsList(builder.Configuration);
 
+//Endpoint do pozyskiwania szczegółów przedmiotu
+app.GetItemDetails(builder.Configuration);
+
+//Endpoint do aktualizowania denych przedmiotu
+app.UpdateItem(builder.Configuration);
+
 app.Run();

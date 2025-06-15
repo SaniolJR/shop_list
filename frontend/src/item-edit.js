@@ -23,7 +23,7 @@ function ItemEdit() {
     useEffect(() => {
         const fetchItemData = async () => {
             try {
-                const response = await fetch(`http://localhost:5016/get_item/${id}`);
+                const response = await fetch(`http://localhost:5016/get_item_details/${id}`);
                 const data = await response.json();
                 
                 setItem({
