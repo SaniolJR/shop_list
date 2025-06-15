@@ -6,6 +6,7 @@ import Login from "./login";
 import CreateAcc from "./createAcc";
 import Account from "./account";
 import Items from "./items";
+import Item from "./item";
 import "./style.css";
 
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/items" element={<Items />} />
         <Route path="/items/:id" element={<Items />} />
+        <Route path="/item/:id" element={<Item />} />
       </Routes>
     </BrowserRouter>
   );
