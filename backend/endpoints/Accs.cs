@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Builder;
+using BCrypt.Net;
 
 public class RegisterAccountDto
 {
@@ -16,6 +17,11 @@ public static class AccountsAPI
         {
             try
             {
+                if (string.IsNullOrEmpty(account.passwd) || account.passwd.Length < 6)
+                {
+                    return Results.BadRequest(new { message = "Hasło musi mieć co najmniej 6 znaków." });
+                }
+
                 var connectionString = config.GetConnectionString("DefaultConnection");
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -32,11 +38,14 @@ public static class AccountsAPI
                     }
                 }
 
+                //szyfrowanie hasła
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(account.passwd);
+
                 string newUserSql = "INSERT INTO user (nick, passwd, email) VALUES (@nick, @passwd, @email)";
                 using (var commandSQL = new MySqlCommand(newUserSql, connection))
                 {
                     commandSQL.Parameters.AddWithValue("@nick", account.nick);
-                    commandSQL.Parameters.AddWithValue("@passwd", account.passwd);
+                    commandSQL.Parameters.AddWithValue("@passwd", hashedPassword);
                     commandSQL.Parameters.AddWithValue("@email", account.email);
 
                     await commandSQL.ExecuteNonQueryAsync();
@@ -57,32 +66,56 @@ public static class AccountsAPI
         {
             try
             {
+
+                if (string.IsNullOrEmpty(account.email) || string.IsNullOrEmpty(account.passwd))
+                {
+                    return Results.BadRequest(new { message = "Email i hasło są wymagane." });
+                }
+
                 var connectionString = config.GetConnectionString("DefaultConnection");
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
-                string loginSql = "SELECT id_user, nick, email FROM user WHERE email = @email AND passwd = @passwd LIMIT 1";
-                using (var commandSQL = new MySqlCommand(loginSql, connection))
-                {
-                    commandSQL.Parameters.AddWithValue("@email", account.email);
-                    commandSQL.Parameters.AddWithValue("@passwd", account.passwd);
+                string checkUserSql = "SELECT id_user, nick, email, passwd FROM user WHERE email = @email";
+                using var commandSQL = new MySqlCommand(checkUserSql, connection);
+                commandSQL.Parameters.AddWithValue("@email", account.email);
 
-                    using var reader = await commandSQL.ExecuteReaderAsync();
-                    if (await reader.ReadAsync())
+                using var reader = await commandSQL.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    var userId = reader["id_user"].ToString();
+                    var nick = reader["nick"].ToString();
+                    var email = reader["email"].ToString();
+                    string storedHashedPassword = reader["passwd"]?.ToString() ?? string.Empty;
+
+                    // sprawdzania hasla
+                    if (BCrypt.Net.BCrypt.Verify(account.passwd, storedHashedPassword))
                     {
-                        var userId = reader.GetInt32(reader.GetOrdinal("id_user"));
-                        response.Cookies.Append("userID", userId.ToString(), new CookieOptions
+                        // Ustaw ciasteczko z ID użytkownika
+                        response.Cookies.Append("userID", userId, new CookieOptions
                         {
                             HttpOnly = true,
-                            SameSite = SameSiteMode.Lax,
-                            // Expires = DateTimeOffset.UtcNow.AddDays(7) // jeśli chcesz trwałe ciasteczko
+                            Secure = false,
+                            SameSite = SameSiteMode.Lax
                         });
-                        return Results.Ok(new { success = true });
+
+                        response.Cookies.Append("userNick", nick, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = false,
+                            SameSite = SameSiteMode.Lax
+                        });
+
+                        return Results.Ok(new { success = true, message = "Zalogowano pomyślnie.", userId, nick, email });
                     }
                     else
                     {
-                        return Results.BadRequest(new { message = "Nieprawidłowy email lub hasło." });
+                        return Results.BadRequest(new { message = "Nieprawidłowe hasło." });
                     }
+                }
+                else
+                {
+                    return Results.BadRequest(new { message = "Użytkownik o tym adresie email nie istnieje." });
                 }
             }
             catch (Exception ex)
@@ -151,6 +184,12 @@ public static class AccountsAPI
             if (string.IsNullOrEmpty(newNick) && string.IsNullOrEmpty(newEmail) && string.IsNullOrEmpty(newPasswd))
                 return Results.BadRequest(new { message = "Brak danych do aktualizacji." });
 
+            if (!string.IsNullOrEmpty(newPasswd) && newPasswd.Length < 6)
+            {
+                return Results.BadRequest(new { message = "Hasło musi mieć co najmniej 6 znaków." });
+
+            }
+
             var connectionString = request.HttpContext.RequestServices
                 .GetRequiredService<IConfiguration>()
                 .GetConnectionString("DefaultConnection");
@@ -170,7 +209,10 @@ public static class AccountsAPI
             if (!string.IsNullOrEmpty(newEmail))
                 cmd.Parameters.AddWithValue("@email", newEmail);
             if (!string.IsNullOrEmpty(newPasswd))
-                cmd.Parameters.AddWithValue("@passwd", newPasswd);
+            {
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPasswd);
+                cmd.Parameters.AddWithValue("@passwd", hashedPassword);
+            }
             cmd.Parameters.AddWithValue("@userId", userId);
 
             var affected = await cmd.ExecuteNonQueryAsync();
@@ -186,6 +228,7 @@ public static class AccountsAPI
         app.MapPost("/logout", (HttpResponse response) =>
         {
             response.Cookies.Delete("userID");
+            response.Cookies.Delete("userNick");
             return Results.Ok(new { success = true, message = "Wylogowano." });
         });
     }

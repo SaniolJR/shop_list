@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "okJzdRzhw8E=",
+  "dgSpecHash": "P1Y9Wa7Ddlc=",
   "success": true,
   "projectFilePath": "C:\\Users\\mateu\\Desktop\\shop_list\\backend\\backend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\mateu\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\mateu\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\mateu\\.nuget\\packages\\google.protobuf\\3.30.0\\google.protobuf.3.30.0.nupkg.sha512",
     "C:\\Users\\mateu\\.nuget\\packages\\k4os.compression.lz4\\1.3.8\\k4os.compression.lz4.1.3.8.nupkg.sha512",

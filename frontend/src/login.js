@@ -59,7 +59,7 @@ function Login() {
           />
         </label>
         <div className="account-form-buttons">
-          <Link to="/create-account">
+          <Link to="/register">
             <button className="account-form-button" type="button">Załóż konto</button>
           </Link>
             <button className="account-form-button" type="submit">Zaloguj</button>
