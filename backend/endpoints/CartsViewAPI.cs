@@ -16,41 +16,41 @@ public static class CartsViewAPI
     public static void ReturnCartList(this WebApplication app, IConfiguration config)
     {
         app.MapGet("/return_cart_list", async (int userId) =>
-{
-    try
-    {
-        var connectionString = config.GetConnectionString("DefaultConnection");
-        using var connection = new MySqlConnection(connectionString);
-        await connection.OpenAsync();
-
-        string sql = File.ReadAllText("sql/return_car_list");
-        // NIE doklejaj LIMIT/OFFSET!
-        using var commandSQL = new MySqlCommand(sql, connection);
-        commandSQL.Parameters.AddWithValue("@userId", userId);
-
-        using var reader = await commandSQL.ExecuteReaderAsync();
-
-        var results = new List<object>();
-        while (await reader.ReadAsync())
         {
-            results.Add(new
+            try
             {
-                id_cart = reader["id_cart"],
-                name = reader["name"],
-                description = reader["description"],
-                id_cart_list = reader["id_cart_list"],
-                user_id_user = reader["user_id_user"],
-            });
-        }
-        DisplayEndpointInfo(sql, results.Count, userId, 1);
-        return Results.Ok(results);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.ToString());
-        return Results.Problem(ex.Message);
-    }
-});
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                string sql = File.ReadAllText("sql/return_car_list");
+                // NIE doklejaj LIMIT/OFFSET!
+                using var commandSQL = new MySqlCommand(sql, connection);
+                commandSQL.Parameters.AddWithValue("@userId", userId);
+
+                using var reader = await commandSQL.ExecuteReaderAsync();
+
+                var results = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    results.Add(new
+                    {
+                        id_cart = reader["id_cart"],
+                        name = reader["name"],
+                        description = reader["description"],
+                        id_cart_list = reader["id_cart_list"],
+                        user_id_user = reader["user_id_user"],
+                    });
+                }
+                DisplayEndpointInfo(sql, results.Count, userId, 1);
+                return Results.Ok(results);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return Results.Problem(ex.Message);
+            }
+        });
     }
 
     //endpoint dodający koszyk do bazy danych, przyjmuje userId jako parametr

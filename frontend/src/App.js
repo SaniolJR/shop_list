@@ -7,6 +7,7 @@ import Cart from "./cart-div";
 import Login from "./login";
 import CreateAcc from "./createAcc";
 import Account from "./account";
+import CartView from "./cartView";
 import "./style.css";
 
 // Przykładowy komponent dla produktów (zrób swój własny)
@@ -45,6 +46,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="register" element={<CreateAcc />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/cart/:id" element={<CartView />} />
       </Routes>
     </BrowserRouter>
   );
