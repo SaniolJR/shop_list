@@ -21,30 +21,32 @@ function AddItem({ onClose }) {
   };
 
   return (
-    <div className="adding">
-      <h2 className="title">Dodaj nowy folder</h2>
-      <label className="input-label">
-        Nazwa: (max 30 znaków)
-        <input
-          className="input"
-          type="text"
-          maxLength={30}
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
-      </label>
-      <label className="input-label">
-        Opisz: (max 200 znaków)
-        <textarea
-          className="textarea"
-          maxLength={200}
-          value={desc}
-          onChange={e => setDesc(e.target.value)}
-        />
-      </label>
-      <div className="button-row">
-        <button className="button" onClick={onClose}>Anuluj</button>
-        <button className="button" onClick={handleAddCart}>Dodaj</button>
+    <div className="adding-overlay">
+      <div className="adding">
+        <h2 className="title">Dodaj nowy folder</h2>
+        <label className="input-label">
+          Nazwa: (max 30 znaków)
+          <input
+            className="input"
+            type="text"
+            maxLength={30}
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </label>
+        <label className="input-label">
+          Opisz: (max 200 znaków)
+          <textarea
+            className="textarea"
+            maxLength={200}
+            value={desc}
+            onChange={e => setDesc(e.target.value)}
+          />
+        </label>
+        <div className="button-row">
+          <button className="button" onClick={onClose}>Anuluj</button>
+          <button className="button" onClick={handleAddCart}>Dodaj</button>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,15 @@
+.adding-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.35); /* półprzezroczyste tło */
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .adding {
     position: fixed;
     top: 50%;
@@ -24,15 +36,13 @@
 }
 
 .button-row {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    position: absolute;
-    bottom: 2vh;
-    left: 0;
-    padding: 0 2vw;
-    box-sizing: border-box;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10vw;
+    align-items: center;
+    width: 100%;
+    height: 70vh;
 }
 
 .button {

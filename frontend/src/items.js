@@ -5,6 +5,7 @@ import Item from "./item-div";
 import AddButton from "./addButton";
 import DeleteButton from "./deleteButton";
 import DeleteCart from "./deleteCart";
+import AddItem from "./addItem";
 
 function Items() {
   const [showAdd, setShowAdd] = useState(false);
@@ -45,6 +46,13 @@ function Items() {
             userId={userId}
           />
         </>
+      )}
+      {showAdd && (
+        <AddItem
+          onClose={() => setShowAdd(false)}
+          cartId={id}
+          userId={userId}
+        />
       )}
       {showDelete && (
         <DeleteCart
