@@ -57,4 +57,7 @@ app.Logout();
 // Endpoint usuwający konto użytkownika
 app.DeleteAccount();
 
+// Endpoint dodający przedmiot do koszyka
+app.AddItem(builder.Configuration);
+
 app.Run();

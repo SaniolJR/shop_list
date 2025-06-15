@@ -4,18 +4,39 @@ import "./style-adding.css";
 function AddItem({ onClose, cartId, userId }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
   const [currency, setCurrency] = useState("");
   const [link, setLink] = useState("");
   const [imageURL, setImageURL] = useState("");
 
   const handleAddCart = async () => {
-    await fetch("http://localhost:5016/add_item", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, cartId, name, description, price, currency, link, imageURL }),
-    });
-    onClose();
+  try {
+      const res = await fetch("http://localhost:5016/add_item", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          userId, 
+          cartId, 
+          name, 
+          description, 
+          price: parseFloat(price) || 0, 
+          currency, 
+          link, 
+          imageURL 
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        alert("Przedmiot został dodany do koszyka.");
+        onClose();
+      } else {
+        alert(data.message || "Błąd podczas dodawania przedmiotu");
+      }
+    } catch (error) {
+      alert("Błąd sieci. Spróbuj ponownie.");
+    }
   };
 
   // Styl dla inputów i textarea, ograniczający szerokość

@@ -24,7 +24,6 @@ public static class CartsViewAPI
                 await connection.OpenAsync();
 
                 string sql = File.ReadAllText("sql/return_car_list");
-                // NIE doklejaj LIMIT/OFFSET!
                 using var commandSQL = new MySqlCommand(sql, connection);
                 commandSQL.Parameters.AddWithValue("@userId", userId);
 
