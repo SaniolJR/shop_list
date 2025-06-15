@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import InfScroll from "./int_scroll";
 import Cart from "./cart-div";
-import AddButton from "./add_button";
-import AddCart from "./add_cart";
+import AddButton from "./addButton";
+import AddCart from "./addCart";
 
 function Carts() {
   const [showAdd, setShowAdd] = useState(false);

@@ -20,7 +20,7 @@ function Cart(props) {
   const bgClass = bg_color(props.color);
 
   return (
-    <Link to={`/cart/${props.id_cart}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link to={`/items/${props.id_cart}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <div className={`main-container ${bgClass}`}>
         <img
           className="bg-image"
