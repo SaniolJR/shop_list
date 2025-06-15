@@ -14,7 +14,7 @@ imageURL
 function Item(props){
     return (
       <div className={`item-main-container`}>
-        <Link to={`/item/${props.id_item}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link to={`/item-edit/${props.id_item}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className="item-name">{props.name}</div>
         </Link>
 
