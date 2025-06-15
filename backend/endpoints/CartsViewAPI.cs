@@ -112,6 +112,42 @@ public static class CartsViewAPI
         });
     }
 
+    public static void DeleteCart(this WebApplication app, IConfiguration config)
+    {
+        app.MapDelete("/delete_cart", async (int cartId, HttpRequest request) =>
+        {
+            var userId = request.Cookies["userID"];
+            if (string.IsNullOrEmpty(userId))
+                return Results.Unauthorized();
+
+            var connectionString = request.HttpContext.RequestServices
+                .GetRequiredService<IConfiguration>()
+                .GetConnectionString("DefaultConnection");
+            using var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            // 1. Usuń powiązane itemy
+            var deleteItemsCmd = new MySqlCommand("DELETE FROM cart_items WHERE cart_id_cart = @cartId", connection);
+            deleteItemsCmd.Parameters.AddWithValue("@cartId", cartId);
+            await deleteItemsCmd.ExecuteNonQueryAsync();
+
+            // 2. Usuń koszyk, tylko jeśli należy do zalogowanego użytkownika
+            var deleteCartCmd = new MySqlCommand(@"
+                DELETE c FROM cart c
+                JOIN cart_list cl ON c.cart_list_id_cart_list = cl.id_cart_list
+                WHERE c.id_cart = @cartId AND cl.user_id_user = @userId
+            ", connection);
+            deleteCartCmd.Parameters.AddWithValue("@cartId", cartId);
+            deleteCartCmd.Parameters.AddWithValue("@userId", userId);
+            var affected = await deleteCartCmd.ExecuteNonQueryAsync();
+
+            if (affected > 0)
+                return Results.Ok(new { success = true });
+            else
+                return Results.BadRequest(new { message = "Nie udało się usunąć koszyka." });
+        });
+    }
+
     //metoda do wyświetlania w konsoli
     public static void DisplayEndpointInfo(string sql, int resultsCount, int userId, int page)
     {

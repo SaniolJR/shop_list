@@ -36,6 +36,9 @@ app.ReturnCartList(builder.Configuration);
 // Endpoint dodający koszyk do bazy danych
 app.AddCart(builder.Configuration);
 
+// Endpoint usuwający koszyk z bazy danych
+app.DeleteCart(builder.Configuration);
+
 // Endpoint rejestrujący konto użytkownika
 app.RegisterAccount(builder.Configuration);
 
