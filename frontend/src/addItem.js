@@ -31,6 +31,7 @@ function AddItem({ onClose, cartId, userId }) {
       if (res.ok && data.success) {
         alert("Przedmiot został dodany do koszyka.");
         onClose();
+        window.location.reload();
       } else {
         alert(data.message || "Błąd podczas dodawania przedmiotu");
       }

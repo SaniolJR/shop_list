@@ -94,6 +94,9 @@ function ItemEdit() {
                 setEditingField(null);
                 setEditValue("");
                 alert("Zmiana została zapisana!");
+                setTimeout(() => {
+                window.location.reload();
+            }, 1000);
             } else {
                 alert("Błąd podczas zapisywania");
             }

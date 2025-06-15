@@ -6,19 +6,21 @@ function AddCart({ onClose }) {
   const [desc, setDesc] = useState("");
 
   const handleAddCart = async () => {
-    // Pobierz userId z backendu
-    const res = await fetch("http://localhost:5016/me", { credentials: "include" });
-    const data = await res.json();
-    const userId = data.userId;
+  const res = await fetch("http://localhost:5016/me", { credentials: "include" });
+  const data = await res.json();
+  const userId = data.userId;
 
-    // Teraz dodaj koszyk dla aktualnego usera
-    await fetch("http://localhost:5016/add_cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, name, description: desc }),
-    });
+  const response = await fetch("http://localhost:5016/add_cart", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, name, description: desc }),
+  });
+  
+  if (response.ok) {
     onClose();
-  };
+    window.location.reload();
+  }
+};
 
   return (
     <div className="adding-overlay">

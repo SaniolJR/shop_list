@@ -47,6 +47,9 @@ function Account() {
         setEditField(null);
         setNewValue("");
         if (editField === "password") alert("Hasło zostało zmienione.");
+          setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         alert("Błąd podczas zapisywania zmian.");
       }
