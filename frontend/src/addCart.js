@@ -43,9 +43,9 @@ function AddCart({ onClose }) {
             onChange={e => setDesc(e.target.value)}
           />
         </label>
-        <div className="button-row">
-          <button className="button" onClick={onClose}>Anuluj</button>
-          <button className="button" onClick={handleAddCart}>Dodaj</button>
+        <div className="adding-button-row">
+          <button className="adding-button" onClick={onClose}>Anuluj</button>
+          <button className="adding-button" onClick={handleAddCart}>Dodaj</button>
         </div>
       </div>
     </div>

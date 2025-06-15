@@ -3,28 +3,37 @@
     top: 0; left: 0; right: 0; bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.35); /* półprzezroczyste tło */
+    background: rgba(0,0,0,0.35);
     z-index: 999;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto; /* dodaj przewijanie overlay */
 }
 
 .adding {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    /* USUŃ position: fixed, top, left, transform */
     width: 50vw;
-    height: 50vh;
-    display: flex;
+    max-height: 80vh;
+    overflow-y: auto; /* przewijanie wewnątrz modala */
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* tytuł na górze */
+    justify-content: flex-start;
     border: 1px solid #ccc;
     border-radius: 1vw;
     background: #5d9dfd;
     box-shadow: 0 2px 16px #0002;
+    padding: 2vw;
+    margin: 2vh 0; /* odstęp od góry/dołu gdy się przewija */
+    font-family: 'Arial', sans-serif;
+}
+
+.adding-button-row {
+    display: flex;
+    flex-direction: row !important;        /* OBOK SIEBIE */
+    justify-content: center;
+    gap: 2vw;                   /* MAŁY ODSTĘP */
+    width: 100%;
 }
 
 .title {
@@ -35,17 +44,7 @@
     width: 100%;
 }
 
-.button-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10vw;
-    align-items: center;
-    width: 100%;
-    height: 70vh;
-}
-
-.button {
+.adding-button {
     padding: 1vh 2vw;
     font-size: 1.5vw;
     color: #fff;
@@ -64,6 +63,17 @@
     border-radius: 0.4vw;
     border: 1px solid #bbb;
     box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+.input-label{
+    font-size: 1vw;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-bottom: 0.5vh;
+    display: block;
+    text-align: center;
 }
 
 .textarea {
@@ -78,3 +88,4 @@
     box-sizing: border-box;
     resize: vertical;
 }
+
