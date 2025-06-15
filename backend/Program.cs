@@ -60,4 +60,7 @@ app.DeleteAccount();
 // Endpoint dodający przedmiot do koszyka
 app.AddItem(builder.Configuration);
 
+//Endpoint zwracający listę przedmiotów w koszyku
+app.GetItemsList(builder.Configuration);
+
 app.Run();

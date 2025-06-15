@@ -111,4 +111,65 @@ public static class ItemsViewAPI
             }
         });
     }
+
+    public static void GetItemsList(this WebApplication app, IConfiguration config)
+    {
+        app.MapGet("/return_items_list", async (int userId, int cartId) =>
+        {
+            try
+            {
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                // Sprawdź czy koszyk należy do użytkownika
+                string checkCartSQL = @"
+                    SELECT c.id_cart FROM cart c
+                    JOIN cart_list cl ON c.cart_list_id_cart_list = cl.id_cart_list
+                    WHERE c.id_cart = @cartId AND cl.user_id_user = @userId";
+                using var checkCommand = new MySqlCommand(checkCartSQL, connection);
+                checkCommand.Parameters.AddWithValue("@cartId", cartId);
+                checkCommand.Parameters.AddWithValue("@userId", userId);
+                var cartExists = await checkCommand.ExecuteScalarAsync();
+
+                if (cartExists == null)
+                {
+                    return Results.BadRequest("Koszyk nie istnieje lub nie należy do użytkownika.");
+                }
+
+                // Pobierz itemy z koszyka
+                string sql = @"
+                    SELECT i.id_item, i.name, i.description, i.price, i.currency, i.link, i.imageURL
+                    FROM item i
+                    JOIN cart_items ci ON i.id_item = ci.produkt_id_produkt
+                    WHERE ci.cart_id_cart = @cartId";
+
+                using var command = new MySqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@cartId", cartId);
+
+                using var reader = await command.ExecuteReaderAsync();
+                var items = new List<object>();
+
+                while (await reader.ReadAsync())
+                {
+                    items.Add(new
+                    {
+                        id_item = reader.GetInt32(reader.GetOrdinal("id_item")),
+                        name = reader.GetString(reader.GetOrdinal("name")),
+                        description = reader.IsDBNull(reader.GetOrdinal("description")) ? "" : reader.GetString(reader.GetOrdinal("description")),
+                        price = reader.IsDBNull(reader.GetOrdinal("price")) ? 0 : reader.GetFloat(reader.GetOrdinal("price")),
+                        currency = reader.IsDBNull(reader.GetOrdinal("currency")) ? "" : reader.GetString(reader.GetOrdinal("currency")),
+                        link = reader.IsDBNull(reader.GetOrdinal("link")) ? "" : reader.GetString(reader.GetOrdinal("link")),
+                        imageURL = reader.IsDBNull(reader.GetOrdinal("imageURL")) ? "" : reader.GetString(reader.GetOrdinal("imageURL"))
+                    });
+                }
+
+                return Results.Ok(items);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Błąd podczas pobierania listy przedmiotów: {ex.Message}");
+            }
+        });
+    }
 }
