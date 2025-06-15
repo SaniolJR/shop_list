@@ -69,4 +69,7 @@ app.GetItemDetails(builder.Configuration);
 //Endpoint do aktualizowania denych przedmiotu
 app.UpdateItem(builder.Configuration);
 
+// Endpoint do usuwania przedmiotu z koszyka
+app.DeleteItem(builder.Configuration);
+
 app.Run();

@@ -263,5 +263,44 @@ public static class ItemsViewAPI
         });
     }
 
+    public static void DeleteItem(this WebApplication app, IConfiguration config)
+    {
+        app.MapDelete("/delete_item/{itemId}", async (int itemId) =>
+        {
+            try
+            {
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                // usun z cart_items powiązane z tym przedmiotem
+                string deleteCartItemsSQL = "DELETE FROM cart_items WHERE produkt_id_produkt = @itemId";
+                using var deleteCartItemsCmd = new MySqlCommand(deleteCartItemsSQL, connection);
+                deleteCartItemsCmd.Parameters.AddWithValue("@itemId", itemId);
+                await deleteCartItemsCmd.ExecuteNonQueryAsync();
+
+                // usun przedmiot z tabeli item
+                string deleteItemSQL = "DELETE FROM item WHERE id_item = @itemId";
+                using var deleteItemCmd = new MySqlCommand(deleteItemSQL, connection);
+                deleteItemCmd.Parameters.AddWithValue("@itemId", itemId);
+
+                int rowsAffected = await deleteItemCmd.ExecuteNonQueryAsync();
+
+                if (rowsAffected > 0)
+                {
+                    return Results.Ok(new { success = true, message = "Przedmiot został usunięty." });
+                }
+                else
+                {
+                    return Results.NotFound("Przedmiot nie został znaleziony.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Błąd podczas usuwania przedmiotu: {ex.Message}");
+            }
+        });
+    }
+
 
 }

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./style-item-edit.css";
+import DeleteButton from "./deleteButton";
 
 function ItemEdit() {
     const { id } = useParams();
+    const navigate = useNavigate();
     
     // Stan dla danych produktu
     const [item, setItem] = useState({
@@ -43,6 +45,32 @@ function ItemEdit() {
             fetchItemData();
         }
     }, [id]);
+
+    //usuwanie przdmiotu
+     const handleDeleteItem = async () => {
+        const confirmDelete = window.confirm(
+            `Czy na pewno chcesz usunąć przedmiot "${item.name}"?\nTa akcja jest nieodwracalna.`
+        );
+        
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:5016/delete_item/${id}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                alert("Przedmiot został usunięty!");
+                navigate(-1); // Wróć do poprzedniej strony
+            } else {
+                const error = await response.text();
+                alert(`Błąd podczas usuwania: ${error}`);
+            }
+        } catch (error) {
+            console.error("Błąd:", error);
+            alert("Błąd sieci. Spróbuj ponownie.");
+        }
+    };
 
     // Funkcja do rozpoczęcia edycji
     const startEdit = (field) => {
@@ -90,8 +118,14 @@ function ItemEdit() {
 
     return (
         <div className="item-details-container">
-            <h2>Szczegóły Produktu</h2>
+            <h2>Szczegóły produktu</h2>
             
+            
+            <DeleteButton 
+                mode="item" 
+                onClick={handleDeleteItem}
+            />
+
             <div className="item-content">
                 {/* LEWA STRONA */}
                 <div className="left-side">
