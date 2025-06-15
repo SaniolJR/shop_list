@@ -2,6 +2,7 @@ import React from 'react';
 import './style-cart.css';
 import cartIMG from './cartIMG.png';
 import { Link } from 'react-router-dom';
+import Item from './item-div';
 
 function bg_color(color){ //do rozbudowy - nic innego nie obsługuje różnych kolorów niż ta funkcja
   switch(color) {

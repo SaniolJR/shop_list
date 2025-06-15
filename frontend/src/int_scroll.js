@@ -26,8 +26,10 @@ function InfScroll({ containerTypeHTTPGet, ContainerType }) {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",  //3 kolumny
-        gap: "16px",
-        width: "100%"
+        gap: "0.5vw",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
       }}
     >
       {/* renderuj każdy element jako osobny komponent przekazując mu propsy */}

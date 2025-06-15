@@ -6,7 +6,7 @@ import Login from "./login";
 import CreateAcc from "./createAcc";
 import Account from "./account";
 import Items from "./items";
-import Item from "./item";
+import Item from "./item-div";
 import "./style.css";
 
 
